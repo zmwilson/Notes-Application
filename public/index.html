@@ -33,9 +33,9 @@
     <div class="container">
       <div class="vertical-center">
         <form>
-          <input type="email" class="form-control" id="email" placeholder="Email">
+          <input type="text" class="form-control" id="email" placeholder="Email">
 
-          <input type="password" class="form-control" id="password" placeholder="Password">
+          <input type="text" class="form-control" id="password" placeholder="Password">
 
           <button id="signup">Sign up</button>
           <button id="login">Sign in</button>
@@ -59,11 +59,11 @@
    	</script>
    	<script>
     //Enable sign in with email and password
-  	document.getElementById("login").addEventListener('click', e=>{
+  	document.getElementById("login").addEventListener('click', () =>{
         const email = document.getElementById("email").value;
         const pass = document.getElementById("password").value;
         const promise = firebase.auth().signInWithEmailAndPassword(email, pass);
-        firebase.auth().signInWithEmailAndPassword(email.toString(), password.toString()).catch(function(error) {
+        firebase.auth().signInWithEmailAndPassword(email.toString(), pass.toString()).catch(function(error) {
           	// Handle Errors here.
         	var errorCode = error.code;
           	var errorMessage = error.message;
@@ -71,6 +71,19 @@
           	alert(errorMessage);
         });
     })
+
+  	//Enable new user signup
+	document.getElementById("signup").addEventListener('click', () =>{
+        const email = document.getElementById("email").value;
+        const pass = document.getElementById("password").value;
+        const promise = firebase.auth().signInWithEmailAndPassword(email.toString(), pass.toString());
+    	firebase.auth().createUserWithEmailAndPassword(email, pass).catch(function(error) {
+  			// Handle Errors here.
+  			var errorCode = error.code;
+  			var errorMessage = error.message;
+  			console.log(errorMessage);
+  		});
+  	})
 
    	firebase.auth().onAuthStateChanged(function(user) {
         if(user){

@@ -1,0 +1,83 @@
+<html>
+  <head>
+    <style>
+      input{
+        display: block;
+        width: 100%;
+        margin: 5%;
+      }
+
+      .vertical-center {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+        -ms-transform: translateX(-50%);
+        transform: translateX(-50%);
+      }
+
+      .container {
+        height: 75%;
+        width: 50%;
+        background-color: lightgrey;
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+    </style>
+  </head>
+  <body style="text-align: center">
+    <div class="container">
+      <div class="vertical-center">
+        <form>
+          <input type="email" class="form-control" id="email" placeholder="Email">
+
+          <input type="password" class="form-control" id="password" placeholder="Password">
+
+          <button id="signup">Sign up</button>
+          <button id="login">Sign in</button>
+        </form>
+      </div>
+    </div>
+
+          <script src="https://www.gstatic.com/firebasejs/5.7.2/firebase.js"></script>
+          <script>
+        // Initialize Firebase
+        var config = {
+          apiKey: "AIzaSyD8yGTtPlvuMcVqjRpOliqj8N5wihkCU3U",
+          authDomain: "cs-493-notes-app.firebaseapp.com",
+          databaseURL: "https://cs-493-notes-app.firebaseio.com",
+          projectId: "cs-493-notes-app",
+          storageBucket: "cs-493-notes-app.appspot.com",
+          messagingSenderId: "471758858458"
+        };
+        firebase.initializeApp(config);
+      </script>
+      <script>
+      //Listening on the signIn button click.
+      document.getElementById("login").addEventListener('click', e=>{
+        const email = document.getElementById("email").value;
+        const pass = document.getElementById("password").value;
+        const promise = firebase.auth().signInWithEmailAndPassword(email, pass);
+        firebase.auth().signInWithEmailAndPassword(email.toString(), password.toString()).catch(function(error) {
+          // Handle Errors here.
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          console.log(errorMessage);
+          alert(errorMessage);
+        });
+      })
+
+      firebase.auth().onAuthStateChanged(function(user) {
+        if(user){
+          alert("user");
+        } else{
+          alert("fail");
+        }
+      });
+    </script>
+  </body>
+</html>

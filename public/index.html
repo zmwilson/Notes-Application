@@ -40,11 +40,12 @@
           <button id="signup">Sign up</button>
           <button id="login">Sign in</button>
         </form>
+        <button id="googleLogin">Sign in with Google</button>
       </div>
     </div>
 
-          <script src="https://www.gstatic.com/firebasejs/5.7.2/firebase.js"></script>
-          <script>
+    <script src="https://www.gstatic.com/firebasejs/5.7.2/firebase.js"></script>
+  	<script>
         // Initialize Firebase
         var config = {
           apiKey: "AIzaSyD8yGTtPlvuMcVqjRpOliqj8N5wihkCU3U",
@@ -55,29 +56,44 @@
           messagingSenderId: "471758858458"
         };
         firebase.initializeApp(config);
-      </script>
-      <script>
-      //Listening on the signIn button click.
-      document.getElementById("login").addEventListener('click', e=>{
+   	</script>
+   	<script>
+    //Enable sign in with email and password
+  	document.getElementById("login").addEventListener('click', e=>{
         const email = document.getElementById("email").value;
         const pass = document.getElementById("password").value;
         const promise = firebase.auth().signInWithEmailAndPassword(email, pass);
         firebase.auth().signInWithEmailAndPassword(email.toString(), password.toString()).catch(function(error) {
-          // Handle Errors here.
-          var errorCode = error.code;
-          var errorMessage = error.message;
-          console.log(errorMessage);
-          alert(errorMessage);
+          	// Handle Errors here.
+        	var errorCode = error.code;
+          	var errorMessage = error.message;
+          	console.log(errorMessage);
+          	alert(errorMessage);
         });
-      })
+    })
 
-      firebase.auth().onAuthStateChanged(function(user) {
+   	firebase.auth().onAuthStateChanged(function(user) {
         if(user){
           alert("user");
         } else{
           alert("fail");
         }
-      });
+    });
+
+   	//Enable google sign in
+  	let googleLogin = document.getElementById('googleLogin');
+	googleLogin.addEventListener('click', () => {
+		//1. Get a TwitterAuthProvider instance.
+		var googleProvider = new firebase.auth.GoogleAuthProvider();
+		firebase.auth().signInWithPopup(googleProvider).then(function(result) {
+			console.log(result);
+			 var user = result.user;
+		}).catch(function (error) {
+			 //TODO: Handle Errors here.
+			 console.log(error);
+		});
+	});
+
     </script>
   </body>
 </html>

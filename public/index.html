@@ -5,16 +5,17 @@
         display: block;
         width: 100%;
         margin: 5%;
+        padding: 15px 32px;
+      	font-size: 16px;
+      	font-weight: bold;
+      	color: black;
       }
 
       .vertical-center {
         position: absolute;
         left: 50%;
         top: 50%;
-        -ms-transform: translateY(-50%);
-        transform: translateY(-50%);
-        -ms-transform: translateX(-50%);
-        transform: translateX(-50%);
+        transform: translate(-50%, -50%);
       }
 
       .container {
@@ -27,20 +28,39 @@
         left: 50%;
         transform: translate(-50%, -50%);
       }
+
+      .black {
+      	margin: 10px;
+      	border: none;
+      	background-color: black;
+      	color: white;
+      	text-align: center;
+      	padding: 15px 32px;
+      	font-size: 16px;
+      }
+
+      .blue {
+      	margin: 10px;
+      	border: none;
+      	background-color: blue;
+      	color: white;
+      	text-align: center;
+      	padding: 15px 32px;
+      	font-size: 16px;
+      }
     </style>
   </head>
-  <body style="text-align: center">
+  <body style="justify-content: center">
     <div class="container">
       <div class="vertical-center">
-        <form>
-          <input type="text" class="form-control" id="email" placeholder="Email">
 
-          <input type="text" class="form-control" id="password" placeholder="Password">
+        <input type="text" class="form-control" id="email" placeholder="Email">
+        <input type="text" class="form-control" id="password" placeholder="Password">
 
-          <button id="signup">Sign up</button>
-          <button id="login">Sign in</button>
-        </form>
-        <button id="googleLogin">Sign in with Google</button>
+        <button id="signup" class="black" onclick="signUp()">Sign up</button>
+        <button id="loginButton" class="black" onclick="login()">Sign in</button>
+    	</br>
+        <button id="googleLogin" class="blue">Sign in with Google</button>
       </div>
     </div>
 
@@ -58,38 +78,44 @@
         firebase.initializeApp(config);
    	</script>
    	<script>
-    //Enable sign in with email and password
-  	document.getElementById("login").addEventListener('click', () =>{
-        const email = document.getElementById("email").value;
-        const pass = document.getElementById("password").value;
-        const promise = firebase.auth().signInWithEmailAndPassword(email, pass);
-        firebase.auth().signInWithEmailAndPassword(email.toString(), pass.toString()).catch(function(error) {
-          	// Handle Errors here.
-        	var errorCode = error.code;
-          	var errorMessage = error.message;
-          	console.log(errorMessage);
-          	alert(errorMessage);
-        });
-    })
+    
+    //Enable new user signup
+    function signUp(){
+    	//console.log("made it!");
+		var email = document.getElementById("email").value;
+	   	var pass = document.getElementById("password").value;
+	   	console.log(email);
+	   	console.log(pass);
+	  	firebase.auth().createUserWithEmailAndPassword(email, pass).catch(function(error) {
+	        // Handle Errors here.
+	       	var errorCode = error.code;
+	      	var errorMessage = error.message;
+	       	console.log(errorMessage);
+	   	});
+  	}
 
-  	//Enable new user signup
-	document.getElementById("signup").addEventListener('click', () =>{
-        const email = document.getElementById("email").value;
-        const pass = document.getElementById("password").value;
-        const promise = firebase.auth().signInWithEmailAndPassword(email.toString(), pass.toString());
-    	firebase.auth().createUserWithEmailAndPassword(email, pass).catch(function(error) {
+	//Enable sign in with email and password
+	function login(){
+        var email = document.getElementById("email").value;
+        var pass = document.getElementById("password").value;
+        firebase.auth().signInWithEmailAndPassword(email, pass)
+    	.catch(function(error) {
   			// Handle Errors here.
   			var errorCode = error.code;
   			var errorMessage = error.message;
   			console.log(errorMessage);
   		});
-  	})
+  	}
 
    	firebase.auth().onAuthStateChanged(function(user) {
         if(user){
-          alert("user");
+        	//console.log("something good happened");
+        	//sessionStorage.setItem("sent", user);
+    		window.location.assign("user.html");
+          	//alert("user");
         } else{
-          alert("fail");
+        	//console.log("something bad happened");
+          	//alert("fail");
         }
     });
 

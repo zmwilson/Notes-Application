@@ -77,9 +77,7 @@
         };
         firebase.initializeApp(config);
    	</script>
-   	<script>
-   	//hw1
-    
+   	<script> 
     //Enable new user signup
     function signUp(){
     	//console.log("made it!");
@@ -112,7 +110,13 @@
         if(user){
         	//console.log("something good happened");
         	//sessionStorage.setItem("sent", user);
-    		window.location.assign("user.html");
+  			email = user.email;
+  			photoUrl = user.photoURL;
+  			emailVerified = user.emailVerified;
+  			uid = user.uid;
+  			var queryString = "?Username=" + email;
+			window.location.href = "user.html" + queryString; 
+    		//window.location.assign("user.html");
           	//alert("user");
         } else{
         	//console.log("something bad happened");

@@ -8,12 +8,12 @@
       }
 
       p {
-        background-color: white;
+      	background-color: white;
       	padding: 50px 50px;
       	overflow: hidden;
-        white-space: nowrap;
-        font-family: Arial, Helvetica, sans-serif;
-        font-weight: bold;
+    	white-space: nowrap;
+    	font-family: Arial, Helvetica, sans-serif;
+    	font-weight: bold;
       }
 
       .vertical-center {
@@ -23,171 +23,28 @@
         transform: translate(-50%, -50%);
       }
 
-      .splitLeft{
+      .container {
+        height: 75%;
+        width: 50%;
         background-color: lightgrey;
-        height: 100%;
-        width: 33%;
-        position: fixed;
-        z-index: 1;
-        top: 30px;
-        left: 0;
-        bottom: 30px;
-        overflow-x: hidden;
-        margin: 10px;
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
       }
-
-      .splitRight{
-        background-color: lightgrey;
-        height: 100%;
-        width: 65%;
-        position: fixed;
-        z-index: 1;
-        top: 30px;
-        bottom: 30px;
-        right: 0;
-        overflow-x: hidden;
-        margin: 10px;
-      }
-
-      .black {
-        margin: 10px;
-        border: none;
-        background-color: black;
-        color: white;
-        text-align: center;
-        padding: 15px 32px;
-        font-size: 16px;
-      }
-
-      .btn-group button {
-        background-color: blue; 
-        border: 1px solid darkblue; 
-        color: white; 
-        padding: 10px 24px;
-        cursor: pointer;
-        width: 100%;
-        display: block;
-      }
-
-      .btn-group button:not(:last-child) {
-        border-bottom: none;
-      }
-
-      .btn-group button:hover {
-        background-color: grey;
-      }
-
     </style>
   </head>
 	<body style="text-align: center">
-    <div class="splitLeft">
-      <h1>Notes</h1>
-            <div id="noteList" class="btn-group">
-            </div>
-    </div>
-
-    <div class="splitRight">
-        <div class="vertical-center">
-          <div class="container2">
-            <input type="text" class="form-control" id="title" placeholder="Title">
-            <input type="text" class="form-control" id="note" placeholder="Note">
-            <button id="save" class="black" onclick="writeUserData()">Save Note</button>
-            <button id="delete" class="black" onclick="deleteNote()">Delete Note</button>
-          </div>
-        </div>
-    </div>
-
-
-    <script src="https://www.gstatic.com/firebasejs/5.7.2/firebase.js"></script>
-    <script>
-        // Initialize Firebase
-        var config = {
-          apiKey: "AIzaSyD8yGTtPlvuMcVqjRpOliqj8N5wihkCU3U",
-          authDomain: "cs-493-notes-app.firebaseapp.com",
-          databaseURL: "https://cs-493-notes-app.firebaseio.com",
-          projectId: "cs-493-notes-app",
-          storageBucket: "cs-493-notes-app.appspot.com",
-          messagingSenderId: "471758858458"
-        };
-        firebase.initializeApp(config);
-    </script>
+    	<div class="container">
+      		<div class="vertical-center">
+      			<div class="container2">
+					<p id="header">User Details</p>
+				</div>
+			</div>
+		</div>
 
 		<script>
-      //initalize db
-      var db = firebase.database();
-
-      window.onload = populate;
-
-      var queryString = decodeURIComponent(window.location.search);
-      queryString = queryString.substring(1);
-      var queries = queryString.split("&");
-      var temp = queries[0].split("=");
-      var email = temp[1];
-      var temp2 = email.split(".");
-      var temp3 = temp2[0].split("@");
-      var username = temp3[0];
-
-      var title;
-      var cID;
-      for (var i = 0; i < queries.length; i++)
-      {
-        document.write(username + "<br>");
-      }
-
-      function writeUserData() {
-        firebase.database().ref('users/' + username + '/' + document.getElementById("title").value).set({
-          note: document.getElementById("note").value
-          //some more user data
-        });
-
-        var node = document.createElement("BUTTON");
-        node.id = document.getElementById("title").value;
-        id = node.id;
-        node.value = document.getElementById("title").value;
-        node.onclick = listclick;
-        var textnode = document.createTextNode(document.getElementById("title").value);        
-        node.appendChild(textnode);                              
-        document.getElementById("noteList").appendChild(node);
-        title = document.getElementById("title").value;    
-      }
-
-      function listclick() {
-        var title2 = document.getElementById(this.id).textContent;
-        cID = this.id;
-        firebase.database().ref('users/' + username + '/' + title2).once('value').then(function(snapshot) {
-          var note1 = snapshot.val().note;
-          document.getElementById("title").value = title2;
-          document.getElementById("note").value = note1;
-          });
-      }
-
-      function deleteNote() {
-        title = document.getElementById("title").value;
-        var node = document.getElementById(cID);
-        node.parentNode.removeChild(node);
-        firebase.database().ref('users/' + username + '/' + title).remove();
-      }
-
-      function populate() {
-        var dbRef = db.ref("users/" + username).orderByKey();
-        return dbRef.once("value").then(function(snapshot) {
-          snapshot.forEach(function(childSnapshot) {
-            var key = childSnapshot.key;
-            var note1 = childSnapshot.val().note;
-            var node = document.createElement("BUTTON");
-            node.id = key;
-            id = node.id;
-            node.value = key;
-            node.onclick = listclick;
-            var textnode = document.createTextNode(key);        
-            node.appendChild(textnode);                              
-            document.getElementById("noteList").appendChild(node);
-          });
-        });
-      }
-
-
-
 			//var user = sessionStorage.getItem("sent")
 			//document.getElementById("header").innerHTML = user.displayName;
 		</script>

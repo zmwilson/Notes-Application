@@ -23,20 +23,63 @@
         transform: translate(-50%, -50%);
       }
 
-      .container {
-        height: 75%;
-        width: 50%;
+      .splitLeft{
         background-color: lightgrey;
-        margin: 0;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
+        height: 100%;
+        width: 33%;
+        position: fixed;
+        z-index: 1;
+        top: 30px;
+        left: 0;
+        bottom: 30px;
+        overflow-x: hidden;
+        margin: 10px;
       }
+
+      .splitRight{
+        background-color: lightgrey;
+        height: 100%;
+        width: 65%;
+        position: fixed;
+        z-index: 1;
+        top: 30px;
+        bottom: 30px;
+        right: 0;
+        overflow-x: hidden;
+        margin: 10px;
+      }
+
+      .black {
+        margin: 10px;
+        border: none;
+        background-color: black;
+        color: white;
+        text-align: center;
+        padding: 15px 32px;
+        font-size: 16px;
+      }
+
+      .btn-group button {
+        background-color: blue; 
+        border: 1px solid darkblue; 
+        color: white; 
+        padding: 10px 24px;
+        cursor: pointer;
+        width: 100%;
+        display: block;
+      }
+
+      .btn-group button:not(:last-child) {
+        border-bottom: none;
+      }
+
+      .btn-group button:hover {
+        background-color: grey;
+      }
+
     </style>
   </head>
   <body style="text-align: center">
-
     <div class="splitLeft">
       <h1>Notes</h1>
             <div id="noteList" class="btn-group">
@@ -70,7 +113,6 @@
     </script>
 
     <script>
-
       //initalize db
       var db = firebase.database();
 
@@ -141,6 +183,8 @@
           });
         });
       }
+
+
 
       //var user = sessionStorage.getItem("sent")
       //document.getElementById("header").innerHTML = user.displayName;

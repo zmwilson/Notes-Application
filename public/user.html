@@ -16,6 +16,11 @@
         font-weight: bold;
       }
 
+      img {
+          max-width: 75%;
+          height: auto;
+      }
+
       .vertical-center {
         position: absolute;
         left: 50%;
@@ -59,6 +64,16 @@
         font-size: 16px;
       }
 
+      #file-input {
+        margin: 10px;
+        border: none;
+        background-color: black;
+        color: white;
+        text-align: center;
+        padding: 15px 32px;
+        font-size: 16px;
+      }
+
       .btn-group button {
         background-color: blue; 
         border: 1px solid darkblue; 
@@ -93,7 +108,9 @@
             <input type="text" class="form-control" id="note" placeholder="Note">
             <button id="save" class="black" onclick="writeUserData()">Save Note</button>
             <button id="delete" class="black" onclick="deleteNote()">Delete Note</button>
+            <input id="file-input" type="file" name="name"/>
           </div>
+          <img id = "noteImage">
         </div>
     </div>
 
@@ -115,6 +132,9 @@
     <script>
       //initalize db
       var db = firebase.database();
+
+      //a reference to file storage
+      var storageRef = firebase.storage().ref();
 
       window.onload = populate;
 
@@ -138,6 +158,28 @@
           //some more user data
         });
 
+        //upload image
+        title = document.getElementById("title").value;
+        var noteImagesRef = storageRef.child("images/" + title);
+        var file = document.getElementById("file-input").files[0];
+        if(file){
+          noteImagesRef.put(file).then(function(snapshot){
+            console.log("Uploaded " + file.name)
+            //pull image back from db
+            var imageRef = storageRef.child("images/" + title);
+            imageRef.getDownloadURL()
+              .then((url) => {
+              //Getting the download URL.
+              console.log(url);
+              document.getElementById("noteImage").src = url;
+              })
+              .catch(err => {
+                console.log(err);
+                document.getElementById("noteImage").src = "";
+              })
+          })
+        }
+
         var node = document.createElement("BUTTON");
         node.id = document.getElementById("title").value;
         id = node.id;
@@ -145,19 +187,30 @@
         node.onclick = listclick;
         var textnode = document.createTextNode(document.getElementById("title").value);        
         node.appendChild(textnode);                              
-        document.getElementById("noteList").appendChild(node);
-        title = document.getElementById("title").value;    
+        document.getElementById("noteList").appendChild(node);  
       }
 
       function listclick() {
         var title2 = document.getElementById(this.id).textContent;
+        var imageRef = storageRef.child("images/" + title2);
         cID = this.id;
         firebase.database().ref('users/' + username + '/' + title2).once('value').then(function(snapshot) {
-          var note1 = snapshot.val().note;
-          document.getElementById("title").value = title2;
-          document.getElementById("note").value = note1;
+            var note1 = snapshot.val().note;
+            document.getElementById("title").value = title2;
+            document.getElementById("note").value = note1;
           });
-      }
+
+        imageRef.getDownloadURL()
+          .then((url) => {
+          //Getting the download URL.
+          console.log(url);
+          document.getElementById("noteImage").src = url;
+          })
+          .catch(err => {
+            console.log(err);
+            document.getElementById("noteImage").src = "";
+          })
+        }
 
       function deleteNote() {
         title = document.getElementById("title").value;

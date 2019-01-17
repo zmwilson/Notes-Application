@@ -162,9 +162,23 @@
         title = document.getElementById("title").value;
         var noteImagesRef = storageRef.child("images/" + title);
         var file = document.getElementById("file-input").files[0];
-        noteImagesRef.put(file).then(function(snapshot){
-          console.log("Uploaded " + file.name)
-        })
+        if(file){
+          noteImagesRef.put(file).then(function(snapshot){
+            console.log("Uploaded " + file.name)
+            //pull image back from db
+            var imageRef = storageRef.child("images/" + title);
+            imageRef.getDownloadURL()
+              .then((url) => {
+              //Getting the download URL.
+              console.log(url);
+              document.getElementById("noteImage").src = url;
+              })
+              .catch(err => {
+                console.log(err);
+                document.getElementById("noteImage").src = "";
+              })
+          })
+        }
 
         var node = document.createElement("BUTTON");
         node.id = document.getElementById("title").value;
@@ -181,9 +195,9 @@
         var imageRef = storageRef.child("images/" + title2);
         cID = this.id;
         firebase.database().ref('users/' + username + '/' + title2).once('value').then(function(snapshot) {
-          var note1 = snapshot.val().note;
-          document.getElementById("title").value = title2;
-          document.getElementById("note").value = note1;
+            var note1 = snapshot.val().note;
+            document.getElementById("title").value = title2;
+            document.getElementById("note").value = note1;
           });
 
         imageRef.getDownloadURL()

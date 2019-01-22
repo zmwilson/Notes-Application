@@ -109,6 +109,7 @@
             <button id="save" class="black" onclick="writeUserData()">Save Note</button>
             <button id="delete" class="black" onclick="deleteNote()">Delete Note</button>
             <input id="file-input" type="file" name="name"/>
+            <button id="logout" class="black" onclick="signOut()">Sign Out</button>
           </div>
           <img id = "noteImage">
         </div>
@@ -142,7 +143,9 @@
       queryString = queryString.substring(1);
       var queries = queryString.split("&");
       var temp = queries[0].split("=");
+      var temp2 = queries[1].split("=");
       var email = temp[1];
+      var uid = temp2[1];
       var temp2 = email.split(".");
       var temp3 = temp2[0].split("@");
       var username = temp3[0];
@@ -153,20 +156,20 @@
       document.write("The current user: " + username + "<br>");
 
       function writeUserData() {
-        firebase.database().ref('users/' + username + '/' + document.getElementById("title").value).set({
+        firebase.database().ref("users/" + uid + "/" + document.getElementById("title").value).set({
           note: document.getElementById("note").value
           //some more user data
         });
 
         //upload image
         title = document.getElementById("title").value;
-        var noteImagesRef = storageRef.child("images/" + title);
+        var noteImagesRef = storageRef.child("images/" + uid + "/" + title);
         var file = document.getElementById("file-input").files[0];
         if(file){
           noteImagesRef.put(file).then(function(snapshot){
             console.log("Uploaded " + file.name)
             //pull image back from db
-            var imageRef = storageRef.child("images/" + title);
+            var imageRef = storageRef.child("images/" + uid + "/" + title);
             imageRef.getDownloadURL()
               .then((url) => {
               //Getting the download URL.
@@ -192,9 +195,9 @@
 
       function listclick() {
         var title2 = document.getElementById(this.id).textContent;
-        var imageRef = storageRef.child("images/" + title2);
+        var imageRef = storageRef.child("images/"+ uid + "/" + title2);
         cID = this.id;
-        firebase.database().ref('users/' + username + '/' + title2).once('value').then(function(snapshot) {
+        firebase.database().ref('users/' + uid + '/' + title2).once('value').then(function(snapshot) {
             var note1 = snapshot.val().note;
             document.getElementById("title").value = title2;
             document.getElementById("note").value = note1;
@@ -216,11 +219,11 @@
         title = document.getElementById("title").value;
         var node = document.getElementById(cID);
         node.parentNode.removeChild(node);
-        firebase.database().ref('users/' + username + '/' + title).remove();
+        firebase.database().ref('users/' + uid + '/' + title).remove();
       }
 
       function populate() {
-        var dbRef = db.ref("users/" + username).orderByKey();
+        var dbRef = db.ref("users/" + uid).orderByKey();
         return dbRef.once("value").then(function(snapshot) {
           snapshot.forEach(function(childSnapshot) {
             var key = childSnapshot.key;
@@ -234,6 +237,15 @@
             node.appendChild(textnode);                              
             document.getElementById("noteList").appendChild(node);
           });
+        });
+      }
+
+      function signOut() {
+        firebase.auth().signOut().then(function() {
+          console.log('Signed Out');
+          window.location.href = "index.html";
+        }, function(error) {
+          console.error('Sign Out Error', error);
         });
       }
 
